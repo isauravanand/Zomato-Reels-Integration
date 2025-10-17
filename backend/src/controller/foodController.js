@@ -2,19 +2,25 @@ const foodModel = require("../models/fooditem.model");
 const {v4:uuid} = require("uuid");
 const storageService = require("../Services/stroage.services");
 
-async function createFood(req,res){
-    const fileUploadResult =  await storageService.uploadFile(req.file.buffer,uuid())
-    const foodItem = await foodModel.create({
-        name:req.body.name,
-        description:req.body.description,
-        vedio:fileUploadResult.url,
-        foodPartner: req.foodPartner._id
-    })
-    res.status(201).json({
-        messgae:"Food Item Created",
-        food:foodItem
-    })
+async function createFood(req, res) {
+  try {
+    const fileUploadResult = await storageService.uploadFile(req.file.buffer, uuid());
 
+    const foodItem = await foodModel.create({
+      name: req.body.name,
+      description: req.body.description,
+      video: fileUploadResult.url,
+      foodpartner: req.foodPartner._id,  // ✅ matches schema exactly
+    });
+
+    res.status(201).json({
+      message: "Food Item Created",
+      food: foodItem,
+    });
+  } catch (error) {
+    console.error("Error creating food item:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 }
 
 async function getFoodItems(req,res) {

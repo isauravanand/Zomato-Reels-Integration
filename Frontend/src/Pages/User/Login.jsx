@@ -1,18 +1,25 @@
 import React from "react";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
+
 
 function Login() {
-
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const email = e.target.email.value;
         const password = e.target.password.value;
 
-        console.log("User login attempt:");
-        console.log("Email:", email);
-        console.log("Password:", password);
+       const response = await axios.post("http://localhost:3000/api/auth/user/login",{
+        email:email,
+        password:password,
+       },{
+        withCredentials:true,
+       })
 
-        // Add your actual authentication logic here (e.g., API call)
+       console.log(response.data);
+       navigate("/")
     }
 
     return (

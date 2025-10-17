@@ -1,28 +1,36 @@
 import React from "react";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+
+    const navigate = useNavigate();
+
     const handleSubmite = async (e) => {
         e.preventDefault();
-
-        const username = e.target.username.value;
+        
+        const fullname = e.target.fullname.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
+       
+        const response = await axios.post("http://localhost:3000/api/auth/user/register",{
+            fullname:fullname,
+            email:email,
+            password:password,
+        },{
+            withCredentials:true,
+        })
 
-        console.log("Username:", username);
-        console.log("Email:", email);
-        console.log("Password:", password);
-
-        // Add your actual registration logic here (e.g., API call)
+        console.log(response.data);
+        navigate("/");
     }
 
     return (
         // Dark background gradient
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-indigo-900 p-6">
-            {/* Replaced motion.div with standard div */}
             <div
                 className="bg-black/20 backdrop-blur-lg p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/5"
             >
-                {/* Replaced motion.h1 with standard h1 */}
                 <h1
                     className="text-3xl font-bold text-white text-center mb-8"
                 >
@@ -35,18 +43,17 @@ function Register() {
                     {/* Username Field (Replaced motion.div) */}
                     <div>
                         <label htmlFor="username" className="text-white text-sm font-medium">
-                            Username
+                            Full Name
                         </label>
                         <input
                             type="text"
                             id="username"
-                            name="username" // Added name prop for easy form handling
+                            name="fullname" // Added name prop for easy form handling
                             placeholder="Enter your username"
                             className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
                         />
                     </div>
 
-                    {/* Email Field (Replaced motion.div) */}
                     <div>
                         <label htmlFor="email" className="text-white text-sm font-medium">
                             Email
@@ -60,7 +67,6 @@ function Register() {
                         />
                     </div>
 
-                    {/* Password Field (Replaced motion.div) */}
                     <div>
                         <label htmlFor="password" className="text-white text-sm font-medium">
                             Password
@@ -74,7 +80,6 @@ function Register() {
                         />
                     </div>
 
-                    {/* Register Button (Replaced motion.button with standard button) */}
                     <button
                         // Simulated Framer Motion effects with Tailwind classes
                         className="w-full mt-6 py-2 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-cyan-600 transition-all transform hover:scale-[1.03] active:scale-[0.98]"

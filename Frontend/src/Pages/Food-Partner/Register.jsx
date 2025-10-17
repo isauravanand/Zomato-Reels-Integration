@@ -1,55 +1,61 @@
 import React from "react";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 function FoodPartnerRegister() {
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const ownerName = e.target.ownerName.value;
-    const restaurantName = e.target.restaurantName.value;
+    const name = e.target.name.value;
+    const contactName = e.target.contactName.value;
     const phone = e.target.phone.value;
     const email = e.target.email.value;
     const address = e.target.address.value;
     const password = e.target.password.value;
 
-    console.log("Partner registration attempt:");
-    console.log("Owner:", ownerName);
-    console.log("Restaurant Name:", restaurantName);
-    console.log("Phone:", phone);
-    console.log("Email:", email);
-    console.log("Address:", address);
-    console.log("Password:", password);
+    const response = await axios.post("http://localhost:3000/api/auth/food-partner/register",{
+      name:name,
+      contactName:contactName,
+      phone:phone,
+      email:email,
+      address:address,
+      password:password,
+    },{
+      withCredentials:true
+    })
 
-    // Add your registration logic (e.g., API call) here
+    console.log(response.data);
+    navigate("/create-food");
   }
 
+
+
   return (
-    // Dark background with a warm, food-themed gradient (Red theme)
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-red-900 p-6">
       <div
-        // Standard div replacing motion.div
         className="bg-black/20 backdrop-blur-lg p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/5"
       >
         <h1
-          // Standard h1 replacing motion.h1
           className="text-3xl font-bold text-white text-center mb-8"
         >
           Partner Sign Up 🧑‍🍳
         </h1>
 
-        {/* Form with submission handler */}
+   
         <form className="space-y-5" onSubmit={handleSubmit}>
 
           {/* Owner Name Field */}
           <div>
             <label htmlFor="ownerName" className="text-white text-sm font-medium">
-              Owner Name
+              Name
             </label>
             <input
               type="text"
-              id="ownerName"
-              name="ownerName"
-              placeholder="Enter Your Good Name"
+              id="name"
+              name="name"
+              placeholder="Enter Name"
               className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all border border-transparent hover:border-white/10"
             />
           </div>
@@ -57,13 +63,13 @@ function FoodPartnerRegister() {
           {/* Restaurant Name Field */}
           <div>
             <label htmlFor="restaurantName" className="text-white text-sm font-medium">
-              Restaurant Name
+              Contact Name
             </label>
             <input
               type="text"
               id="restaurantName"
-              name="restaurantName"
-              placeholder="Enter your restaurant's name"
+              name="contactName"
+              placeholder="Enter your Contact name"
               className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all border border-transparent hover:border-white/10"
             />
           </div>

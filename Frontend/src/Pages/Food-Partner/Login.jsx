@@ -1,28 +1,32 @@
 import React from "react";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 function FoodPartnerLogin() {
-
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const email = e.target.email.value;
         const password = e.target.password.value;
 
-        console.log("Partner login attempt:");
-        console.log("Email:", email);
-        console.log("Password:", password);
+        const response = await axios.post("http://localhost:3000/api/auth/food-partner/login",{
+            email:email,
+            password:password,
+        },{
+            withCredentials:true,
+        })
 
-        // Add your actual authentication logic here
+        console.log(response.data);
+        navigate("/create-food");
     }
 
     return (
         // Dark background with a warm, food-themed gradient (Red theme)
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-red-900 p-6">
-            {/* Standard div replacing motion.div */}
             <div
                 className="bg-black/20 backdrop-blur-lg p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/5"
             >
-                {/* Standard h1 replacing motion.h1 */}
                 <h1
                     className="text-3xl font-bold text-white text-center mb-8"
                 >

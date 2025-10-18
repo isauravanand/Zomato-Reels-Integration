@@ -4,6 +4,7 @@ const cookieparser = require("cookie-parser");
 const app = express();
 const authRoutes = require("./routes/auth");
 const foodRoutes = require("./routes/food");
+const foodPartner = require("./routes/foodPartner")
 const cors = require("cors");
 
 app.use(express.json());
@@ -21,5 +22,6 @@ app.get("/",(req,res)=>{
 
 app.use("/api/auth",authRoutes);
 app.use("/api/food",foodRoutes);
+app.use("/api/food-partner", foodPartner);
 
 module.exports=app;

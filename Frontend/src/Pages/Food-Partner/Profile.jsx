@@ -6,16 +6,18 @@ import { useEffect } from "react";
 
 
 const Profile = () => {
-    const {id} = useParams();
+    const { id } = useParams();
     const [profile, setProfile] = useState(null)
+    const [videos, setVideos] = useState([])
 
-    useEffect(()=>{
-        axios.get(`http://localhost:3000/api/food-partner/${id}`,{withCredentials:true})
-        .then(res=>{
-            // console.log("responced Data is:",res.data);
-            setProfile(res.data.foodPartner);
-        })
-    },[id])
+    useEffect(() => {
+        axios.get(`http://localhost:3000/api/food-partner/${id}`, { withCredentials: true })
+            .then(res => {
+                // console.log("responced Data is:",res.data);
+                setProfile(res.data.foodPartner);
+                setVideos(res.data.foodPartner.foodItems)
+            })
+    }, [id])
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -36,9 +38,12 @@ const Profile = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-4">
-                {Array.from({ length: 9 }).map((_, index) => (
-                    <div key={index} className="bg-gray-700 rounded-lg h-32 flex items-center justify-center">
-                        <p className="text-sm text-gray-400">Video</p>
+                {videos.map((v) => (
+                    <div key={v.id} className="bg-gray-700 rounded-lg h-32 flex items-center justify-center">
+                        <video
+                            className="profile-grid-video rounded-md border-color:black"
+                            style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                            src={v.video} muted ></video>
                     </div>
                 ))}
             </div>

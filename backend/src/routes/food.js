@@ -12,7 +12,8 @@ const upload = multer({
 //Protected Route 
 router.post("/",authMiddleware.authFoodPartnerModel,upload.single("video"),foodController.createFood);
 router.get("/",authMiddleware.authUserMiddleware,foodController.getFoodItems);
-
+router.post("/like",authMiddleware.authUserMiddleware,foodController.likeFood);
+router.post("/save",authMiddleware.authUserMiddleware,foodController.saveFood)
 
 
 

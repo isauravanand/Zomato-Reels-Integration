@@ -1,107 +1,121 @@
-import React from "react";
-import axios from "axios"
+import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
-
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false); // State for loader
 
-    const handleSubmite = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setLoading(true); // Show loader
+
         const fullname = e.target.fullname.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
-       
-        const response = await axios.post("http://localhost:3000/api/auth/user/register",{
-            fullname:fullname,
-            email:email,
-            password:password,
-        },{
-            withCredentials:true,
-        })
 
-        console.log(response.data);
-        navigate("/");
-    }
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/auth/user/register",
+                {
+                    fullname: fullname,
+                    email: email,
+                    password: password,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
+
+            console.log(response.data);
+            setLoading(false); // Hide loader
+            navigate("/"); // Navigate to home route
+        } catch (error) {
+            console.error("Error during registration:", error);
+            setLoading(false); // Hide loader in case of error
+        }
+    };
 
     return (
-        // Dark background gradient
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-indigo-900 p-6">
-            <div
-                className="bg-black/20 backdrop-blur-lg p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/5"
-            >
-                <h1
-                    className="text-3xl font-bold text-white text-center mb-8"
-                >
-                    Create an Account
-                </h1>
+            {loading ? (
+                <div className="flex flex-col items-center justify-center">
+                    {/* Loader */}
+                    <div className="loader border-t-4 border-cyan-500 rounded-full w-12 h-12 animate-spin mb-4"></div>
+                    <p className="text-lg font-semibold text-gray-300">Registering user...</p>
+                </div>
+            ) : (
+                <div className="bg-black/20 backdrop-blur-lg p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/5">
+                    <h1 className="text-3xl font-bold text-white text-center mb-8">
+                        Create an Account
+                    </h1>
 
-                {/* Added onSubmit handler to the form */}
-                <form className="space-y-5" onSubmit={handleSubmite}>
+                    <form className="space-y-5" onSubmit={handleSubmit}>
+                        {/* Full Name Field */}
+                        <div>
+                            <label htmlFor="fullname" className="text-white text-sm font-medium">
+                                Full Name
+                            </label>
+                            <input
+                                type="text"
+                                id="fullname"
+                                name="fullname"
+                                placeholder="Enter your full name"
+                                className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
+                            />
+                        </div>
 
-                    {/* Username Field (Replaced motion.div) */}
-                    <div>
-                        <label htmlFor="username" className="text-white text-sm font-medium">
-                            Full Name
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="fullname" // Added name prop for easy form handling
-                            placeholder="Enter your username"
-                            className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
-                        />
-                    </div>
+                        {/* Email Field */}
+                        <div>
+                            <label htmlFor="email" className="text-white text-sm font-medium">
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="email" className="text-white text-sm font-medium">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email" // Added name prop
-                            placeholder="Enter your email"
-                            className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
-                        />
-                    </div>
+                        {/* Password Field */}
+                        <div>
+                            <label htmlFor="password" className="text-white text-sm font-medium">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="password" className="text-white text-sm font-medium">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password" // Added name prop
-                            placeholder="Enter your password"
-                            className="mt-1 w-full px-4 py-2 rounded-lg bg-black/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all border border-transparent hover:border-white/10"
-                        />
-                    </div>
+                        {/* Register Button */}
+                        <button
+                            className="w-full mt-6 py-2 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-cyan-600 transition-all transform hover:scale-[1.03] active:scale-[0.98]"
+                            type="submit"
+                        >
+                            Register
+                        </button>
 
-                    <button
-                        // Simulated Framer Motion effects with Tailwind classes
-                        className="w-full mt-6 py-2 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-cyan-600 transition-all transform hover:scale-[1.03] active:scale-[0.98]"
-                        type="submit"
-                    >
-                        Register
-                    </button>
-
-                    <p className="text-center text-white/80 mt-5 text-sm">
-                        Already have an account?{" "}
-                        <a href="/user/login" className="text-cyan-400 hover:text-white transition-colors">
-                            Login
-                        </a>
-                    </p>
-                    <p className="text-center text-white/80 mt-2 text-sm pt-2 border-t border-white/10">
-                        Want to Join us?{" "}
-                        <a href="/food-partner/register" className="text-orange-400 hover:text-white transition-colors">
-                            Register as a Food Partner
-                        </a>
-                    </p>
-                </form>
-            </div>
+                        <p className="text-center text-white/80 mt-5 text-sm">
+                            Already have an account?{" "}
+                            <a href="/user/login" className="text-cyan-400 hover:text-white transition-colors">
+                                Login
+                            </a>
+                        </p>
+                        <p className="text-center text-white/80 mt-2 text-sm pt-2 border-t border-white/10">
+                            Want to Join us?{" "}
+                            <a href="/food-partner/register" className="text-orange-400 hover:text-white transition-colors">
+                                Register as a Food Partner
+                            </a>
+                        </p>
+                    </form>
+                </div>
+            )}
         </div>
     );
 }

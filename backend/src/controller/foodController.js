@@ -38,43 +38,51 @@ async function getFoodItems(req, res) {
 async function likeFood(req, res) {
   try {
     const { foodId } = req.body;
-    const userId = req.user._id; // user from auth middleware
+    const userId = req.user._id;
 
-    // 🔍 Check if the user already liked this food
+    // Check if the user already liked this food
     const existingLike = await likeModel.findOne({
       food: foodId,
       user: userId,
     });
 
+    let updatedFood;
+
     if (existingLike) {
-      // 👎 If already liked → unlike (delete from DB)
+      // 👎 Unlike (delete from DB)
       await likeModel.deleteOne({ _id: existingLike._id });
 
-      // Decrease like count in food model
-      await foodModel.findByIdAndUpdate(foodId, {
-        $inc: { likeCount: -1 },
-      });
+      // Decrease like count
+      updatedFood = await foodModel.findByIdAndUpdate(
+        foodId,
+        { $inc: { likeCount: -1 } },
+        { new: true } // ✅ Return updated document
+      );
 
       return res.status(200).json({
         success: true,
         liked: false,
+        newLikeCount: updatedFood.likeCount || 0,
         message: "Unliked successfully",
       });
     } else {
-      // 👍 If not liked → add like in DB
+      // 👍 Add like
       await likeModel.create({
         user: userId,
         food: foodId,
       });
 
-      // Increase like count in food model
-      await foodModel.findByIdAndUpdate(foodId, {
-        $inc: { likeCount: 1 },
-      });
+      // Increase like count
+      updatedFood = await foodModel.findByIdAndUpdate(
+        foodId,
+        { $inc: { likeCount: 1 } },
+        { new: true } // ✅ Return updated document
+      );
 
       return res.status(200).json({
         success: true,
         liked: true,
+        newLikeCount: updatedFood.likeCount || 0,
         message: "Liked successfully",
       });
     }
@@ -87,6 +95,7 @@ async function likeFood(req, res) {
     });
   }
 }
+
 
 
 
@@ -133,7 +142,6 @@ async function saveFood(req,res){
 async function getSaveFood(req, res) {
 
   const user = req.user;
-
   const savedFoods = await saveModel.find({ user: user._id }).populate('food');
 
   if (!savedFoods || savedFoods.length === 0) {

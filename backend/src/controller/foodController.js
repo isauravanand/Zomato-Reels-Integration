@@ -100,44 +100,52 @@ async function likeFood(req, res) {
 
 
 
-async function saveFood(req,res){
+async function saveFood(req, res) {
   const { foodId } = req.body;
   const user = req.user;
 
   const isAlreadySaved = await saveModel.findOne({
     user: user._id,
     food: foodId
-  })
+  });
+
+  let updatedFood;
 
   if (isAlreadySaved) {
     await saveModel.deleteOne({
       user: user._id,
       food: foodId
-    })
+    });
 
-    await foodModel.findByIdAndUpdate(foodId, {
-      $inc: { savesCount: -1 }
-    })
+    updatedFood = await foodModel.findByIdAndUpdate(
+      foodId,
+      { $inc: { saveCount: -1 } },
+      { new: true } // 👈 return the updated document
+    );
 
     return res.status(200).json({
-      message: "Food unsaved successfully"
-    })
+      message: "Food unsaved successfully",
+      newSaveCount: updatedFood.saveCount // 👈 send updated count
+    });
   }
 
-  const save = await saveModel.create({
+  await saveModel.create({
     user: user._id,
     food: foodId
-  })
+  });
 
-  await foodModel.findByIdAndUpdate(foodId, {
-    $inc: { savesCount: 1 }
-  })
+  updatedFood = await foodModel.findByIdAndUpdate(
+    foodId,
+    { $inc: { saveCount: 1 } },
+    { new: true } // 👈 return the updated document
+  );
 
   res.status(201).json({
     message: "Food saved successfully",
-    save
-  })
+    newSaveCount: updatedFood.saveCount // 👈 send updated count
+  });
 }
+
 
 async function getSaveFood(req, res) {
 

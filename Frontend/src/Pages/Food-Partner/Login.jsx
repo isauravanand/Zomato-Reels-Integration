@@ -101,7 +101,7 @@ function FoodPartnerLogin() {
                         <p className="text-center text-white/80 mt-2 text-sm pt-2 border-t border-white/10">
                             Looking to find food?{" "}
                             <a
-                                href="/user/register"
+                                href="/user/login"
                                 className="text-cyan-400 hover:text-white transition-colors"
                             >
                                 Login as a User
